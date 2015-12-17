@@ -3,7 +3,7 @@ Send a message once your file has finished downloading, installing, or deleting
 
 #####NOTE: Current version is only Mac compatible 
 
-Checks the file or directory to see if any writes have been detected within an interval; if no writes have been detected after the file has initially begun modification, then the file or directory is done.
+Checks the file to see if any writes have been detected within an interval; if no writes have been detected after the file has initially begun modification, then the file is done. **Make sure your download has started before running the program.***
 
 ######Things to modify:
 
