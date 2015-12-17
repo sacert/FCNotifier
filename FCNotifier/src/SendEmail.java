@@ -1,5 +1,4 @@
 import java.util.Properties;
-import java.util.Scanner;
 
 import javax.mail.BodyPart;
 import javax.mail.Message;
@@ -15,12 +14,15 @@ import javax.mail.internet.MimeMultipart;
 
 public class SendEmail {
 	
+	static String username = "filenotifierbot@gmail.com";
+	static String password = "bot12345";
+	
 	static void sendMail(String input, String cusMessage) {
 		Properties props = System.getProperties();
 	    props.put("mail.smtp.starttls.enable", true); // added this line
 	    props.put("mail.smtp.host", "smtp.gmail.com");
-	    props.put("mail.smtp.user", "username@gmail.com");
-	    props.put("mail.smtp.password", "password");
+	    props.put("mail.smtp.user", username);
+	    props.put("mail.smtp.password", password);
 	    props.put("mail.smtp.port", "587");
 	    props.put("mail.smtp.auth", true);
 	
@@ -57,7 +59,7 @@ public class SendEmail {
 	
 	        // Send message
 	        Transport transport = session.getTransport("smtp");
-	        transport.connect("smtp.gmail.com", "username@gmail.com", "password");
+	        transport.connect("smtp.gmail.com", username, password);
 	        System.out.println("- Sent Notification -");
 	        transport.sendMessage(message, message.getAllRecipients());
 	

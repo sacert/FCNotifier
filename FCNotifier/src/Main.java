@@ -12,13 +12,13 @@ public class Main {
 		
 		// get directory of file
 		Scanner reader = new Scanner(System.in);
-		System.out.println("Enter file or directory: ");
+		System.out.println("Enter file: ");
 		String input = reader.nextLine();
 		
 		// check if a valid file
 		File file = new File(input);
 		while(!file.exists()) {
-			System.out.println("Directory not valid, try again: ");
+			System.out.println("File Directory not valid, try again: ");
 			input = reader.nextLine();
 			file = new File(input);
 		}
@@ -47,15 +47,7 @@ public class Main {
 	// checks to see if a file has been modified which indicates that it is currently downloading
 	public static void checkModified(String url, String sendTo, String message) throws InterruptedException {
 		
-		// get directory of file
-		//Scanner reader = new Scanner(System.in);
 		File file = new File(url);
-//		while(!file.exists()) {
-//			System.out.println("Directory not valid, try again: ");
-//			String input = reader.nextLine();
-//			file = new File(input);
-//		}
-//		reader.close();
 		
 		// get current modified file size
 		SimpleDateFormat sdf = new SimpleDateFormat("ss");
@@ -75,7 +67,7 @@ public class Main {
 				if(counter == 1) 
 					System.out.println("Nothing Downloading...");
 				else
-					System.out.println("File Downloading...");
+					System.out.println("File Downloaded...");
 				break;
 			}
 			else
