@@ -1,4 +1,7 @@
 import java.io.File;
+import java.io.IOException;
+import java.net.InetSocketAddress;
+import java.net.Socket;
 import java.text.SimpleDateFormat;
 import java.util.Scanner;
 
@@ -48,6 +51,7 @@ public class Main {
 	public static void checkModified(String url, String sendTo, String message) throws InterruptedException {
 		
 		File file = new File(url);
+		boolean noInet = false;
 		
 		// get current modified file size
 		SimpleDateFormat sdf = new SimpleDateFormat("ss");
@@ -61,27 +65,64 @@ public class Main {
 		// if counter = 1 and the counter hasn't been modified, the file is not being modified 
 		while(true) {
 			counter++;
-			Thread.sleep(10000);
+			Thread.sleep(15000);
+		
+			// check if there is a valid connect, if not, try to reconnect
+			if(!inetTest("www.google.ca")) {
+				if(counter == 1) 
+					System.out.println("ERROR: No Internet Connection");
+				else 
+					System.out.println("\nERROR: No Internet Connection");
+				int retryCounter = 0;
+				
+				// attempt 3 reconnects to the internet
+				while(retryCounter != 3) {
+					System.out.println("Attempting to connect to internet...Retry " + (retryCounter+1) + "\r");
+					Thread.sleep(15000);
+					
+					if(inetTest("www.google.ca")) {
+						System.out.println("Reconnected");
+						Thread.sleep(15000);
+						noInet = false;
+						break;
+					}
+					else {
+						noInet = true;
+					}
+					retryCounter++;
+				}
+				
+			}
+			
 			int timer = Integer.parseInt(sdf.format(file.lastModified()));
-			if((timer - temp) == 0) {
+			// check if no modifications are made
+			// either the file is done downloading or can not start
+			if(timer == temp) {
 				if(counter == 1) 
 					System.out.println("Nothing Downloading...");
 				else
-					System.out.println("File Downloaded...");
+					System.out.println("\nFile Downloaded!");
 				break;
 			}
-			else
+			else {
 				temp = timer;
-		
-			System.out.println("File Downloading...");
+			}
+			
+			if(counter % 3 == 0)
+				System.out.print("\rFile Downloading.  ");
+			else if(counter % 3 == 1)
+				System.out.print("\rFile Downloading.. ");
+			else if(counter % 3 == 2)
+				System.out.print("\rFile Downloading...");
 		}
 		
 		// print if the file has been modified
-		if(counter != 1) {
+		if(counter != 1 && noInet == false) {
 			SendEmail.sendMail(sendTo, message);
 		}
 	}
 	
+	// determines if the user entered a valid email
 	public static boolean isValidEmail(String email) {
 		boolean result = true;
 		try {
@@ -92,4 +133,21 @@ public class Main {
 		}
 		return result;
 	}
+	
+	// check if connected to the internet
+	public static boolean inetTest(String site) {
+		Socket sk = new Socket();
+		InetSocketAddress addr = new InetSocketAddress(site, 80);
+		try {
+			sk.connect(addr, 3000);
+			return true;
+		} catch (IOException e) {
+			return false;
+		} finally {
+			try {sk.close();}
+			catch (IOException e) {}
+		}
+	}
+	
+	
 }
